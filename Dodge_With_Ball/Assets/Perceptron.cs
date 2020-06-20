@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using UnityEngine;
+using System.IO;
 
 [System.Serializable]
 public class TrainingSet
@@ -109,8 +110,36 @@ public class Perceptron : MonoBehaviour {
 		Train();
 		
 	}
-	
+	public void load()
+	{
+		string path = Application.dataPath + "/weights.txt";
+		if(File.Exists(path))
+		{
+			var sr = File.OpenText(path);
+			string line = sr.ReadLine();
+			string[] w = line.Split(',');
+			weights[0] = System.Convert.ToDouble(w[0]);
+			weights[1] = System.Convert.ToDouble(w[1]);
+			bias = System.Convert.ToDouble(w[2]);
+			Debug.Log("Loading");
+		}
+	}
+	public void save()
+	{
+		string path = Application.dataPath + "/weights.txt";
+		var sr = File.CreateText(path);
+		sr.WriteLine(weights[0] + "," + weights[1] + "," + bias);
+		sr.Close();
+	}
+
 	void Update () {
-		
+		if(Input.GetKeyDown(KeyCode.S))
+		{
+			save();
+		}
+		if(Input.GetKeyDown(KeyCode.L))
+		{
+			load();
+		}
 	}
 }
